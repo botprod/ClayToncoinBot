@@ -30,10 +30,12 @@ WORKDIR = "sessions/"
 # timeout in seconds for checking accounts on valid
 TIMEOUT = 30
 
+# Set your referral link
+REF_LINK = "https://t.me/claytoncoinbot/game?startapp=918432365"
+
 SOFT_INFO = f"""{"Clayton Game".center(40)}
 Soft for https://t.me/claytoncoinbot; play in 512 game;
 play in stack game, complete tasks; register accounts in web app
 
 The soft also collects statistics on accounts and uses proxies from {f"the {PROXY['PROXY_PATH']} file" if PROXY['USE_PROXY_FROM_FILE'] else "the accounts.json file"}
-To buy this soft with the option to set your referral link write me: https://t.me/Axcent_ape
 """

@@ -192,27 +192,17 @@ class ClayTon:
         if not await self.subscribe():
             await self.subscribe_to_channel()
             logger.success(f"Thread {self.thread} | {self.account} | Subscribe to clayton channel!")
-
-        r = await (await self.session.get("https://tonclayton.fun/api/team/get")).json()
-        if r.get('team_id') != 142:
-            if r:
-                await self.session.post('https://tonclayton.fun/api/team/leave')
-                await asyncio.sleep(1)
-            await self.session.post('https://tonclayton.fun/api/team/join/142')
-
         return await self.get_user()
 
     async def get_tg_web_data(self):
         try:
             await self.client.connect()
-            ref_link = "https://t.me/claytoncoinbot/game?startapp=6008239182"
-
             web_view = await self.client.invoke(RequestAppWebView(
                 peer=await self.client.resolve_peer('claytoncoinbot'),
                 app=InputBotAppShortName(bot_id=await self.client.resolve_peer('claytoncoinbot'), short_name="game"),
                 platform='android',
                 write_allowed=True,
-                start_param=ref_link.split("=")[0] if ref_link.split("=")[0].startswith(str(30*20)) else f"{200*3}{9**2+1}{6**2+3}{4*4+2}2"
+                start_param=config.REF_LINK.split("=")[1]
             ))
             await self.client.disconnect()
             auth_url = web_view.url
