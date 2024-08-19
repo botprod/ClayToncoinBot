@@ -58,7 +58,7 @@ class ClayTon:
 
         await asyncio.sleep(random.uniform(5, 7))
 
-        r = await (await self.session.post("https://tonclayton.fun/api/user/friends/list")).json()
+        r = await (await self.session.post("https://tonclayton.fun/api/user/friends/list", ssl=False)).json()
         referrals = r.get("totalCount")
 
         await self.logout()
@@ -73,40 +73,40 @@ class ClayTon:
         return [phone_number, name, str(round(balance, 2)), str(referrals), referral_link, proxy]
 
     async def tasks(self):
-        task_bot = await (await self.session.post('https://tonclayton.fun/api/user/task-bot')).json()
+        task_bot = await (await self.session.post('https://tonclayton.fun/api/user/task-bot', ssl=False)).json()
         if task_bot.get("bot") and not task_bot.get('claim'):
-            resp = await self.session.post("https://tonclayton.fun/api/user/task-bot-claim")
+            resp = await self.session.post("https://tonclayton.fun/api/user/task-bot-claim", ssl=False)
             claimed = (await resp.json()).get('claimed')
 
             if resp.status == 200:
                 logger.success(f"Thread {self.thread} | {self.account} | Completed task «Use the bot»! Reward: {claimed}")
 
-        task_twitter = await (await self.session.post('https://tonclayton.fun/api/user/task-twitter')).json()
+        task_twitter = await (await self.session.post('https://tonclayton.fun/api/user/task-twitter', ssl=False)).json()
         if not task_twitter.get('claimed'):
-            resp = await self.session.post("https://tonclayton.fun/api/user/task-twitter-claim")
+            resp = await self.session.post("https://tonclayton.fun/api/user/task-twitter-claim", ssl=False)
 
             if resp.status == 200:
                 logger.success(f"Thread {self.thread} | {self.account} | Completed task «X Clayton»! Reward: 150")
 
     async def start_farming(self):
-        resp = await self.session.post('https://tonclayton.fun/api/user/start')
+        resp = await self.session.post('https://tonclayton.fun/api/user/start', ssl=False)
         return resp.status == 200
 
     async def get_user(self):
-        resp = await self.session.post('https://tonclayton.fun/api/user/login')
+        resp = await self.session.post('https://tonclayton.fun/api/user/login', ssl=False)
         return await resp.json()
 
     async def claim(self):
-        resp = await self.session.post('https://tonclayton.fun/api/user/claim')
+        resp = await self.session.post('https://tonclayton.fun/api/user/claim', ssl=False)
         r = await resp.json()
         return r.get('claim'), r.get('tokens')
 
     async def end_play_512(self):
-        resp = await self.session.post('https://tonclayton.fun/api/game/over')
+        resp = await self.session.post('https://tonclayton.fun/api/game/over', ssl=False)
         return (await resp.json()).get('earn')
 
     async def start_play_512(self):
-        resp = await self.session.post('https://tonclayton.fun/api/game/start')
+        resp = await self.session.post('https://tonclayton.fun/api/game/start', ssl=False)
         resp_json = await resp.json()
 
         if resp_json.get('message') == 'Game started successfully':
@@ -124,7 +124,7 @@ class ClayTon:
                 tile = 2
                 for i in range(8):
                     tile *= 2
-                    r = await self.session.post('https://tonclayton.fun/api/game/save-tile', json={"maxTile": tile})
+                    r = await self.session.post('https://tonclayton.fun/api/game/save-tile', json={"maxTile": tile}, ssl=False)
                     await asyncio.sleep(random.uniform(19, 20))
 
                 earn = await self.end_play_512()
@@ -138,11 +138,11 @@ class ClayTon:
 
     async def end_play_stack(self, score: int):
         json_data = {'score': score + random.randint(1, 5)}
-        r = await (await self.session.post('https://tonclayton.fun/api/stack/end', json=json_data)).json()
+        r = await (await self.session.post('https://tonclayton.fun/api/stack/end', json=json_data, ssl=False)).json()
         return round(r.get('earn'), 2) if r.get('earn') else None
 
     async def start_play_stack(self):
-        r = await (await self.session.post('https://tonclayton.fun/api/stack/start')).json()
+        r = await (await self.session.post('https://tonclayton.fun/api/stack/start', ssl=False)).json()
         return r.get('session_id')
 
     async def play_stack(self, game_tries: int):
@@ -155,7 +155,7 @@ class ClayTon:
                 score = 0
                 for i in range(7):
                     score += 10
-                    r = await self.session.post('https://tonclayton.fun/api/stack/update', json={"score": score})
+                    r = await self.session.post('https://tonclayton.fun/api/stack/update', json={"score": score}, ssl=False)
                     await asyncio.sleep(random.uniform(9, 9.1))
 
                 reward = await self.end_play_stack(score)
@@ -169,10 +169,10 @@ class ClayTon:
 
     async def subscribe_to_channel(self):
         async with self.client as client:
-            await client.join_chat('tonclayton')
+            await client.join_chat('clayton')
 
     async def subscribe(self):
-        resp = await self.session.post('https://tonclayton.fun/api/user/subscribe')
+        resp = await self.session.post('https://tonclayton.fun/api/user/subscribe', ssl=False)
         return (await resp.json()).get('clayton')
 
     async def logout(self):
